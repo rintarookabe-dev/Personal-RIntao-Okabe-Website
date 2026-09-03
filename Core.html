@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FUTURE GADGET LAB — Steins;Gate Archive</title>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%230a0a0d"/><text x="16" y="25" font-size="24" text-anchor="middle" fill="%23ff2b1a" font-family="monospace" font-weight="bold">;</text></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ FOUNDATION ============ */
+:root{
+  --bg:#0a0a0d; --bg2:#0e0e12; --panel:#101015;
+  --ink:#e9e7e2; --body:#c8c6c0; --dim:#8a8894; --faint:#55545e;
+  --red:#ff2b1a; --red-soft:#ff5a3c;
+  --line:rgba(233,231,226,.10); --line-soft:rgba(233,231,226,.05);
+  --mono:'IBM Plex Mono',ui-monospace,'Courier New',monospace;
+  --disp:'Chakra Petch',sans-serif;
+  --jp:'Noto Sans JP',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{color-scheme:dark;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--body);font:400 15px/1.7 var(--mono);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--red);color:#0a0a0d}
+::-webkit-scrollbar{width:9px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#26262c;border:2px solid var(--bg)}
+img{display:block}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+section{scroll-margin-top:76px}
+
+/* film grain over everything */
+body::after{content:'';position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");}
+
+.jp{font-family:var(--jp)}
+:focus-visible{outline:1px solid var(--red);outline-offset:3px}
+
+/* ============ NAV ============ */
+.nav{position:fixed;inset:0 0 auto 0;z-index:90;height:64px;display:flex;align-items:center;gap:26px;
+  padding:0 clamp(16px,3vw,34px);border-bottom:1px solid var(--line);
+  background:rgba(10,10,13,.84);backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:26px;height:26px;background:var(--red);color:#0a0a0d;font:700 17px/1 var(--disp);display:grid;place-items:center;flex:none}
+.brand-name{font:600 12px var(--disp);letter-spacing:.22em;color:var(--ink)}
+.brand-sub{font:400 10px var(--mono);color:var(--faint);letter-spacing:.14em}
+.nav-links{display:flex;gap:24px;margin-left:auto}
+.nav-links a{font:500 11px var(--mono);letter-spacing:.2em;color:var(--dim);padding:6px 0;position:relative;transition:color .2s}
+.nav-links a::before{content:'/ ';color:var(--red);opacity:0;transition:opacity .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+.nav-links a.active::before,.nav-links a:hover::before{opacity:1}
+.nav-right{display:flex;align-items:center;gap:18px}
+.rec{display:flex;align-items:center;gap:8px;font:500 10px var(--mono);letter-spacing:.18em;color:var(--dim)}
+.rec i{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s steps(2) infinite}
+.nav-dmail{font:600 10px var(--mono);letter-spacing:.18em;color:var(--red);background:none;border:1px solid var(--red);padding:9px 14px;transition:.2s}
+.nav-dmail:hover{background:var(--red);color:#0a0a0d}
+@keyframes blink{50%{opacity:.15}}
+
+/* ============ HERO ============ */
+.hero{position:relative;min-height:100svh;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;
+  gap:clamp(30px,4vw,64px);padding:120px clamp(20px,5vw,72px) 80px}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hero>*{position:relative;z-index:1}
+.hero-over{font:500 11px var(--mono);letter-spacing:.3em;color:var(--red);margin-bottom:26px}
+.hero-over::before{content:'—— ';color:var(--faint)}
+.hero-title{font:700 clamp(58px,9.5vw,138px)/0.95 var(--disp);letter-spacing:.01em;color:var(--ink)}
+.hero-title .semi{color:var(--red)}
+.hero-quote{margin:30px 0 18px;padding-left:16px;border-left:2px solid var(--red);
+  font:500 17px/1.5 var(--disp);color:var(--ink);max-width:46ch}
+.hero-desc{max-width:56ch;color:var(--dim);font-size:14px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin:36px 0 30px}
+.btn{font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;padding:15px 24px;
+  border:1px solid var(--ink);background:transparent;color:var(--ink);transition:.22s}
+.btn:hover{border-color:var(--red);color:var(--red)}
+.btn.primary{background:var(--red);border-color:var(--red);color:#0a0a0d}
+.btn.primary:hover{background:var(--red-soft);border-color:var(--red-soft);color:#0a0a0d}
+.hero-stats{display:flex;flex-wrap:wrap;gap:10px 14px;font:500 11px var(--mono);letter-spacing:.16em;color:var(--faint)}
+.hero-stats b{color:var(--ink);font-weight:500}
+.hero-stats i{color:var(--red);font-style:normal}
+
+/* divergence meter */
+.meter{border:1px solid var(--line);background:#0c0c10;padding:22px 22px 16px;position:relative;justify-self:end;width:min(100%,520px)}
+.meter::before,.meter::after{content:'';position:absolute;width:12px;height:12px;pointer-events:none}
+.meter::before{top:-1px;left:-1px;border-top:2px solid var(--red);border-left:2px solid var(--red)}
+.meter::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--red);border-right:2px solid var(--red)}
+.meter-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line-soft);padding-bottom:14px}
+.meter-head h3{font:600 11px var(--mono);letter-spacing:.26em;color:var(--ink);display:flex;align-items:center;gap:10px}
+.meter-head h3::before{content:'';width:7px;height:7px;background:var(--red);flex:none}
+.meter-head span{font:400 10px var(--mono);color:var(--faint);letter-spacing:.14em}
+.leds{display:flex;gap:14px;align-items:center;margin:14px 0 4px;justify-content:flex-end}
+.led{display:flex;align-items:center;gap:6px;font:400 9px var(--mono);letter-spacing:.16em;color:var(--faint)}
+.led i{width:7px;height:7px;border-radius:50%;background:#232329;transition:.15s}
+.led.on i{background:var(--red);box-shadow:0 0 8px rgba(255,43,26,.8)}
+.digits{display:flex;gap:clamp(3px,.5vw,7px);justify-content:center;align-items:flex-end;margin:6px 0 16px}
+.digits svg{height:clamp(46px,4.6vw,68px);width:auto}
+.seg{fill:rgba(233,231,226,.06)}
+.seg.on{fill:var(--red);filter:drop-shadow(0 0 5px rgba(255,58,30,.7))}
+.meter-status{border-top:1px solid var(--line-soft);padding-top:12px;display:flex;justify-content:space-between;gap:16px;
+  font:400 11px var(--mono);letter-spacing:.12em;color:var(--dim);min-height:38px;align-items:baseline}
+.meter-status b{font-weight:400}
+.meter-status .cur{color:var(--red);animation:blink 1s steps(2) infinite}
+.meter-cap{margin-top:10px;font:400 9px var(--mono);letter-spacing:.2em;color:var(--faint)}
+
+/* rotated side label */
+.side-label{position:fixed;right:14px;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:center;
+  z-index:5;font:500 10px var(--mono);letter-spacing:.4em;color:var(--faint);white-space:nowrap;pointer-events:none}
+
+/* ============ TICKER ============ */
+.ticker{overflow:hidden;border-block:1px solid var(--line);background:var(--bg2)}
+.ticker-track{display:flex;width:max-content;animation:tickmove 55s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-half{display:flex}
+.ticker span{white-space:nowrap;padding:13px 0 13px 26px;font:500 10px var(--mono);letter-spacing:.26em;color:var(--dim)}
+.ticker span.sl{color:var(--red)}
+@keyframes tickmove{to{transform:translateX(-50%)}}
+
+/* ============ SECTIONS ============ */
+.section{padding:clamp(80px,10vw,130px) clamp(20px,5vw,72px)}
+.sec-top{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+.sec-no{font:600 12px var(--mono);color:var(--red);letter-spacing:.2em}
+.sec-rule{flex:1;height:1px;background:var(--line)}
+.sec-tag{font:400 10px var(--mono);letter-spacing:.3em;color:var(--faint)}
+.section h2{font:700 clamp(38px,5.6vw,68px)/1.02 var(--disp);color:var(--ink);letter-spacing:.01em}
+.sec-desc{margin-top:20px;max-width:62ch;color:var(--dim);font-size:14px}
+
+/* ============ LAB MEMBER FILES ============ */
+.files-grid{display:grid;grid-template-columns:300px 1fr;gap:clamp(24px,3vw,48px);margin-top:56px;align-items:start}
+.files-index{position:sticky;top:88px;border-top:1px solid var(--line)}
+.idx{display:grid;grid-template-columns:52px 1fr;gap:2px 14px;width:100%;text-align:left;
+  background:none;border:none;border-bottom:1px solid var(--line);padding:16px 12px;color:inherit;
+  border-left:2px solid transparent;transition:background .2s,border-color .2s;position:relative}
+.idx-no{font:500 11px var(--mono);color:var(--faint);letter-spacing:.1em;grid-row:span 2;padding-top:3px}
+.idx-name{font:600 15px var(--disp);letter-spacing:.04em;color:var(--dim);transition:color .2s}
+.idx-role{font:400 9.5px var(--mono);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.idx:hover{background:var(--bg2)}
+.idx:hover .idx-name{color:var(--ink)}
+.idx.active{background:var(--bg2);border-left-color:var(--red)}
+.idx.active .idx-no{color:var(--red)}
+.idx.active .idx-name{color:var(--ink)}
+.idx-hint{padding:14px 12px;font:400 10px var(--mono);letter-spacing:.14em;color:var(--faint)}
+
+.dossier{border:1px solid var(--line);background:var(--panel);min-height:72vh;display:flex;flex-direction:column}
+.dossier-top{display:flex;align-items:center;gap:20px;padding:14px 20px;border-bottom:1px solid var(--line);
+  font:500 10px var(--mono);letter-spacing:.2em;color:var(--faint)}
+.d-access{display:flex;align-items:center;gap:8px;color:var(--red)}
+.d-access i{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1.2s steps(2) infinite}
+.d-keys{margin-left:auto}
+.d-nav{display:flex;gap:8px}
+.d-nav button{width:34px;height:30px;background:none;border:1px solid var(--line);color:var(--dim);font:400 14px var(--mono);transition:.2s}
+.d-nav button:hover{border-color:var(--red);color:var(--red)}
+.dossier-body{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:clamp(20px,2.6vw,40px);padding:clamp(20px,2.6vw,36px);flex:1}
+.d-photo{position:relative;aspect-ratio:3/4;overflow:hidden}
+.d-photo figcaption{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:10px 14px;
+  font:500 9.5px var(--mono);letter-spacing:.18em;color:var(--dim);background:rgba(10,10,13,.78)}
+.d-jp{font:400 13px var(--jp);color:var(--faint);letter-spacing:.5em;margin-bottom:6px}
+.d-name{font:700 clamp(32px,3.6vw,50px)/1.02 var(--disp);color:var(--ink);letter-spacing:.01em;min-height:1.05em}
+.d-alias{margin:10px 0 22px;font:600 11px var(--mono);letter-spacing:.26em;color:var(--red);min-height:1.2em}
+.d-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,auto));gap:14px 34px;justify-content:start;
+  border-block:1px solid var(--line);padding:14px 0;margin-bottom:24px}
+.d-meta dt{font:500 9px var(--mono);letter-spacing:.22em;color:var(--faint);margin-bottom:5px}
+.d-meta dd{font:500 12px var(--mono);letter-spacing:.08em;color:var(--ink)}
+.bio-p{margin-bottom:16px;animation:rise .7s both cubic-bezier(.2,.7,.2,1)}
+.d-quote{margin:26px 0;padding-left:18px;border-left:2px solid var(--red);
+  font:500 18px/1.5 var(--disp);color:var(--ink)}
+.d-facts{list-style:none;display:grid;gap:7px;margin-bottom:26px}
+.d-facts li{font:500 10.5px var(--mono);letter-spacing:.16em;color:var(--dim)}
+.d-facts li::before{content:'// ';color:var(--red)}
+.d-stills{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.d-stills figure{position:relative;aspect-ratio:4/3;overflow:hidden}
+.d-stills figcaption{position:absolute;left:0;bottom:0;z-index:4;padding:6px 10px;font:500 8.5px var(--mono);letter-spacing:.18em;color:var(--dim);background:rgba(10,10,13,.78)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+
+/* duotone archive-image treatment */
+.imgwrap{position:relative;overflow:hidden;background:#0d0d10;isolation:isolate}
+.imgwrap img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.12) brightness(.78);
+  transition:filter .5s,transform .8s cubic-bezier(.2,.7,.2,1),opacity .45s ease}
+.imgwrap::before{content:'';position:absolute;inset:0;z-index:2;background:var(--red);mix-blend-mode:multiply;opacity:.88;transition:opacity .5s}
+.imgwrap::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.22) 2px 3px)}
+.imgwrap:hover::before{opacity:.2}
+.imgwrap:hover img{filter:grayscale(.15) contrast(1.05) brightness(.94);transform:scale(1.035)}
+
+/* ============ WORLD LINES ============ */
+.wl{margin-top:56px}
+.wl svg{width:100%;height:auto;display:block}
+.wlpath{fill:none;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.5s cubic-bezier(.5,0,.2,1)}
+.wl.inview .wlpath{stroke-dashoffset:0}
+.wlnode{fill:#0a0a0d;stroke:var(--dim);stroke-width:1.5;opacity:0;transition:opacity .6s 1s}
+.wl.inview .wlnode{opacity:1}
+.wltxt{opacity:0;transition:opacity .8s ease}
+.wl.inview .wltxt{opacity:1}
+.wl-big{font:500 21px var(--mono);fill:var(--dim)}
+.wl-cap{font:500 10.5px var(--mono);fill:var(--faint);letter-spacing:2px}
+.wl-red{fill:var(--red)}
+.wl-rows{margin-top:44px}
+.wl-row{display:grid;grid-template-columns:230px 1fr;gap:12px 40px;padding:26px 0;border-top:1px solid var(--line);align-items:baseline}
+.wl-row:last-child{border-bottom:1px solid var(--line)}
+.wl-pct{font:700 26px var(--disp);color:var(--ink);letter-spacing:.02em}
+.wl-pct span{font-size:15px;color:var(--faint);margin-left:4px}
+.wl-row h3{font:600 15px var(--disp);letter-spacing:.1em;color:var(--ink);margin-bottom:6px}
+.wl-row p{color:var(--dim);font-size:13.5px;max-width:70ch}
+.wl-row.stg .wl-pct,.wl-row.stg h3{color:var(--red)}
+
+/* ============ GALLERY ============ */
+.gal-filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px}
+.gf{font:500 10px var(--mono);letter-spacing:.18em;color:var(--dim);background:none;border:1px solid var(--line);padding:9px 13px;transition:.2s}
+.gf:hover{color:var(--ink);border-color:var(--dim)}
+.gf.active{color:#0a0a0d;background:var(--red);border-color:var(--red)}
+.gal-grid{margin-top:26px;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:88px;grid-auto-flow:dense;gap:10px}
+.gitem{position:relative;border:none;padding:0;background:none;text-align:left;display:block}
+.gitem.hide{display:none}
+.gitem .imgwrap{width:100%;height:100%}
+.gcap{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:baseline;gap:12px;
+  padding:9px 12px;background:rgba(10,10,13,.78);font:500 9px var(--mono);letter-spacing:.18em}
+.gcap .gref{color:var(--red);flex:none}
+.gcap .glabel{color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}.s6{grid-column:span 6}
+.r2{grid-row:span 2}.r3{grid-row:span 3}
+.gal-hint{margin-top:18px;font:400 10px var(--mono);letter-spacing:.2em;color:var(--faint)}
+.gal-hint b{color:var(--red);font-weight:500}
+.gal-status{margin-top:14px;font:500 10px var(--mono);letter-spacing:.2em;color:var(--red)}
+.gal-status.ok{color:var(--faint)}
+
+/* ============ MODALS / TOASTS ============ */
+.modal{position:fixed;inset:0;z-index:110;display:none;place-items:center;padding:20px;
+  background:rgba(8,8,10,.88);backdrop-filter:blur(6px)}
+.modal.open{display:grid}
+.panel{width:min(560px,94vw);border:1px solid var(--line);background:#0d0d11;position:relative}
+.panel-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+.panel-bar h3{font:600 11px var(--mono);letter-spacing:.24em;color:var(--ink)}
+.panel-bar small{display:block;font:400 9px var(--mono);letter-spacing:.18em;color:var(--faint);margin-top:4px}
+.x-btn{background:none;border:1px solid var(--line);color:var(--dim);width:30px;height:30px;font:400 15px var(--mono);transition:.2s}
+.x-btn:hover{border-color:var(--red);color:var(--red)}
+.panel-body{padding:22px 18px}
+.f-label{display:block;font:500 9.5px var(--mono);letter-spacing:.22em;color:var(--faint);margin:0 0 8px}
+.f-input,.f-area{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ink);
+  font:400 13px var(--mono);padding:12px 14px;margin-bottom:18px;transition:border-color .2s}
+.f-input:focus,.f-area:focus{outline:none;border-color:var(--red)}
+.f-area{resize:none;height:84px;line-height:1.5}
+.f-count{text-align:right;font:400 10px var(--mono);color:var(--faint);margin:-14px 0 18px}
+.term{margin-top:20px;border-top:1px dashed var(--line);padding-top:16px;min-height:24px;display:grid;gap:6px}
+.tline{font:400 11px var(--mono);letter-spacing:.1em;color:var(--dim);animation:rise .4s both}
+.tline.hot{color:var(--red)}
+
+/* lightbox */
+.lb-panel{width:min(860px,94vw)}
+.lb-stage{position:relative;background:#0d0d10;display:grid;place-items:center;min-height:300px}
+.lb-stage img{width:100%;max-height:72vh;object-fit:contain}
+.lb-cap{display:flex;justify-content:space-between;gap:16px;padding:14px 18px;border-top:1px solid var(--line);
+  font:500 10px var(--mono);letter-spacing:.18em;color:var(--dim)}
+.lb-cap .gref{color:var(--red)}
+.lb-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:42px;height:42px;
+  background:rgba(10,10,13,.7);border:1px solid var(--line);color:var(--ink);font:400 17px var(--mono);transition:.2s}
+.lb-arrow:hover{border-color:var(--red);color:var(--red)}
+.lb-prev{left:12px}.lb-next{right:12px}
+.lb-count{color:var(--faint)}
+
+#toasts{position:fixed;left:20px;bottom:20px;z-index:150;display:grid;gap:10px}
+.toast{max-width:360px;background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--red);
+  padding:13px 16px;font:400 11.5px var(--mono);letter-spacing:.06em;color:var(--ink);
+  opacity:0;transform:translateY(12px);transition:.4s cubic-bezier(.2,.7,.2,1)}
+.toast.in{opacity:1;transform:none}
+
+/* ============ FOOTER ============ */
+footer{padding:clamp(80px,10vw,120px) clamp(20px,5vw,72px) 40px;border-top:1px solid var(--line)}
+.foot-title{font:700 clamp(42px,7vw,92px)/1 var(--disp);color:var(--ink)}
+.foot-title i{color:var(--red);font-style:normal}
+.foot-grid{display:grid;grid-template-columns:1fr auto;gap:40px;margin-top:44px;align-items:start}
+.terminal{border:1px solid var(--line);background:var(--bg2);padding:20px 22px;min-width:min(560px,100%);min-height:180px}
+.terminal div{font:400 12px var(--mono);letter-spacing:.08em;color:var(--dim);min-height:20px}
+.terminal div.cmd{color:var(--ink)}
+.terminal div.cmd::before{content:'$ ';color:var(--red)}
+.terminal .cur{color:var(--red);animation:blink 1s steps(2) infinite}
+.foot-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;margin-top:56px;
+  padding-top:20px;border-top:1px solid var(--line);font:400 10px var(--mono);letter-spacing:.14em;color:var(--faint)}
+.foot-meta b{color:var(--red);font-weight:500}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1100px){
+  .hero{grid-template-columns:1fr;padding-top:110px}
+  .meter{justify-self:stretch}
+  .side-label{display:none}
+  .files-grid{grid-template-columns:1fr}
+  .files-index{position:static;display:flex;overflow-x:auto;border-top:none;gap:8px;padding-bottom:8px}
+  .idx{min-width:230px;border:1px solid var(--line);border-left:2px solid transparent;flex:none}
+  .idx-hint{display:none}
+  .dossier-body{grid-template-columns:1fr}
+  .d-photo{aspect-ratio:16/10;max-height:420px}
+  .d-meta{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .nav-links{display:none}
+  .brand-sub{display:none}
+  .gal-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:110px}
+  .s2{grid-column:span 1}.s3,.s4{grid-column:span 2}.s6{grid-column:span 2}
+  .r3{grid-row:span 2}
+  .wl-row{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+  .terminal{min-width:0}
+  .d-keys{display:none}
+  .nav-dmail{padding:8px 10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .ticker-track{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <a class="brand" href="#top">
+    <span class="brand-mark">;</span>
+    <span>
+      <span class="brand-name">FUTURE GADGET LAB</span><br>
+      <span class="brand-sub">AKIHABARA — EST. 2010</span>
+    </span>
+  </a>
+  <nav class="nav-links">
+    <a href="#files">01 FILES</a>
+    <a href="#worldlines">02 WORLD LINES</a>
+    <a href="#gallery">03 GALLERY</a>
+  </nav>
+  <div class="nav-right">
+    <span class="rec"><i></i>REC · <span id="labClock">--:--:--</span> JST</span>
+    <button class="nav-dmail" data-open="dmail">SEND D-MAIL</button>
+  </div>
+</header>
+
+<span class="side-label">EL PSY KONGROO — エル・プサイ・コングルゥ</span>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div>
+    <p class="hero-over">FUTURE GADGET LABORATORY // WORLD LINE ARCHIVE</p>
+    <h1 class="hero-title">STEINS<span class="semi">;</span><br>GATE</h1>
+    <p class="hero-quote">“The universe has a beginning, but no end. — I'll see you at the end of it.”</p>
+    <p class="hero-desc">On April 28th, 2010, a self-proclaimed mad scientist sent a text message to the past —
+      and the universe noticed. This is the lab's recovered archive: eight members, three attractor fields,
+      and the one fabricated convergence where nobody has to die.</p>
+    <div class="hero-cta">
+      <button class="btn primary" id="ctaFiles">Open Lab Member Files</button>
+      <button class="btn" data-open="dmail">Send a D-Mail</button>
+    </div>
+    <p class="hero-stats"><b>08</b> LAB MEMBERS <i>///</i> <b>03</b> ATTRACTOR FIELDS <i>///</i> <b>1.048596%</b> CONVERGENCE</p>
+  </div>
+  <div>
+    <div class="meter" id="meterBox">
+      <div class="meter-head">
+        <h3>DIVERGENCE METER</h3>
+        <span>SG-048596</span>
+      </div>
+      <div class="leds">
+        <span class="led on" id="ledPwr"><i></i>PWR</span>
+        <span class="led" id="ledSnd"><i></i>SND</span>
+        <span class="led" id="ledErr"><i></i>ERR</span>
+      </div>
+      <div class="digits" id="meterDigits" aria-label="Divergence 1.048596 percent"></div>
+      <div class="meter-status"><b id="meterStatus">BOOTING PROBE…</b><span class="cur">▮</span></div>
+      <p class="meter-cap">PROBE ATTACHED TO FUTURE GADGET NO.8 — “PHONE MICROWAVE (TEMPORAL LABEL)”</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<!-- ================= LAB MEMBER FILES ================= -->
+<section class="section" id="files">
+  <div class="section-head reveal">
+    <div class="sec-top"><span class="sec-no">01</span><span class="sec-rule"></span><span class="sec-tag">PERSONNEL DOSSIERS — DECRYPTED ON OPEN</span></div>
+    <h2>LAB MEMBER FILES</h2>
+    <p class="sec-desc">Eight dossiers recovered from the Future Gadget Lab's archive. Select a member from the
+      index — each file decrypts on open. Portraits stream in from the lab's visual archive (official anime / VN art).
+      Membership numbers are canon; one of them was revoked.</p>
+  </div>
+  <div class="files-grid">
+    <nav class="files-index" id="filesIndex" aria-label="Lab member index"></nav>
+    <article class="dossier" id="dossier">
+      <div class="dossier-top">
+        <span id="dFilePos">FILE 001 / 008</span>
+        <span class="d-access"><i></i><span id="dAccess">ACCESS GRANTED</span></span>
+        <span class="d-keys">↑↓ BROWSE FILES</span>
+        <span class="d-nav">
+          <button id="prevBtn" aria-label="Previous member">←</button>
+          <button id="nextBtn" aria-label="Next member">→</button>
+        </span>
+      </div>
+      <div class="dossier-body">
+        <figure class="d-photo imgwrap">
+          <img id="dImg" src="" alt="Archive portrait">
+          <figcaption id="dPhotoCap"></figcaption>
+        </figure>
+        <div class="d-info">
+          <p class="d-jp" id="dJp"></p>
+          <h3 class="d-name" id="dName"></h3>
+          <p class="d-alias" id="dAlias"></p>
+          <dl class="d-meta">
+            <div><dt>LAB MEMBER NO.</dt><dd id="dNo"></dd></div>
+            <div><dt>ROLE</dt><dd id="dRole"></dd></div>
+            <div><dt>STATUS</dt><dd id="dStatus"></dd></div>
+            <div><dt>VOICE (JP)</dt><dd id="dVA"></dd></div>
+          </dl>
+          <div id="dBio"></div>
+          <blockquote class="d-quote" id="dQuote"></blockquote>
+          <ul class="d-facts" id="dFacts"></ul>
+          <div class="d-stills">
+            <figure class="imgwrap"><img id="dStill1" src="" alt="Archive still A" loading="lazy"><figcaption>STILL 01 — ANIME/VN FEED</figcaption></figure>
+            <figure class="imgwrap"><img id="dStill2" src="" alt="Archive still B" loading="lazy"><figcaption>STILL 02 — ANIME/VN FEED</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= WORLD LINES ================= -->
+<section class="section" id="worldlines">
+  <div class="section-head reveal">
+    <div class="sec-top"><span class="sec-no">02</span><span class="sec-rule"></span><span class="sec-tag">ATTRACTOR FIELD ANALYSIS</span></div>
+    <h2>WORLD LINE ARCHIVE</h2>
+    <p class="sec-desc">World lines are not parallel universes — they are revisions of the same universe.
+      Every D-mail nudges history onto a different strand, and each strand has a will of its own:
+      an attractor field that pulls outcomes back toward convergence, no matter who resists.</p>
+  </div>
+
+  <div class="wl reveal" id="wl">
+    <svg viewBox="0 0 1200 340" role="img" aria-label="Diagram of world lines diverging and converging">
+      <path class="wlpath" pathLength="1" d="M 20 170 H 320" stroke="rgba(233,231,226,.4)" stroke-width="1.5"/>
+      <path class="wlpath" pathLength="1" d="M 320 170 C 460 170, 480 282, 640 282 C 800 282, 820 170, 940 170" stroke="rgba(255,43,26,.85)" stroke-width="1.6" style="transition-delay:.25s"/>
+      <path class="wlpath" pathLength="1" d="M 320 170 C 460 170, 480 58, 640 58 C 800 58, 820 170, 940 170" stroke="rgba(233,231,226,.35)" stroke-width="1.3" style="transition-delay:.45s"/>
+      <path class="wlpath" pathLength="1" d="M 940 170 H 1180" stroke="var(--red)" stroke-width="2.2" style="transition-delay:.9s"/>
+      <circle class="wlnode" cx="320" cy="170" r="5"/>
+      <circle class="wlnode" cx="940" cy="170" r="5.5" style="stroke:var(--red)"/>
+      <circle class="wlnode" cx="1180" cy="170" r="4"/>
+      <text class="wltxt wl-big" x="320" y="126" text-anchor="middle">2010.04.28</text>
+      <text class="wltxt wl-cap" x="320" y="146" text-anchor="middle">FIRST D-MAIL SENT</text>
+      <text class="wltxt wl-big" x="640" y="30" text-anchor="middle">1.130205%</text>
+      <text class="wltxt wl-cap" x="640" y="48" text-anchor="middle">BETA ATTRACTOR FIELD</text>
+      <text class="wltxt wl-big" x="640" y="308" text-anchor="middle">1.048599%</text>
+      <text class="wltxt wl-cap" x="640" y="326" text-anchor="middle">ALPHA ATTRACTOR FIELD</text>
+      <text class="wltxt wl-big wl-red" x="958" y="140">1.048596%</text>
+      <text class="wltxt wl-cap wl-red" x="958" y="158">STEINS GATE — CONVERGENCE</text>
+      <text class="wltxt wl-cap" x="958" y="198">OPERATION SKULD — 2010.08.21</text>
+    </svg>
+  </div>
+
+  <div class="wl-rows">
+    <div class="wl-row reveal">
+      <div class="wl-pct">1.048599<span>%</span></div>
+      <div>
+        <h3>ALPHA ATTRACTOR FIELD</h3>
+        <p>Every D-mail pulls the past further into SERN's hands. Here the lab is hunted, the year 2000
+          belongs to the Committee of 300, and Mayuri's death is written into the field itself — it repeats
+          no matter how many times Okabe leaps. A world with no exit, only detours.</p>
+      </div>
+    </div>
+    <div class="wl-row reveal">
+      <div class="wl-pct">1.130205<span>%</span></div>
+      <div>
+        <h3>BETA ATTRACTOR FIELD</h3>
+        <p>Undo the first D-mail and the tragedy simply changes shape: Kurisu dies on July 28th, and in 2036
+          the Third World War begins. The line where saving one person and saving seven billion are, at first,
+          the same impossible choice.</p>
+      </div>
+    </div>
+    <div class="wl-row stg reveal">
+      <div class="wl-pct">1.048596<span>%</span></div>
+      <div>
+        <h3>STEINS GATE — CONVERGENCE</h3>
+        <p>Neither Alpha nor Beta. A fabricated world line, reached by deceiving the past itself — one lie
+          carried across time, and one paper that must survive a fire. No dystopia, no war, no deaths.
+          This is the choice of Steins Gate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section class="section" id="gallery">
+  <div class="section-head reveal">
+    <div class="sec-top"><span class="sec-no">03</span><span class="sec-rule"></span><span class="sec-tag">VISUAL ARCHIVE — CHARACTER PORTRAITS</span></div>
+    <h2>ARCHIVE GALLERY</h2>
+    <p class="sec-desc">Official character artwork from the anime & visual novel, streamed into the archive
+      from MyAnimeList. Stored in the lab's red-shift format; hover to restore the original signal,
+      click to inspect at full scale. Filter by lab member below.</p>
+  </div>
+  <p class="gal-status" id="galStatus">ESTABLISHING PORTRAIT UPLINK…</p>
+  <div class="gal-filters" id="galFilters"></div>
+  <div class="gal-grid" id="galGrid"></div>
+  <p class="gal-hint"><b>NOTE //</b> The Organization claims these stills are corrupted. The Organization is wrong.</p>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <h2 class="foot-title reveal">El Psy Kongroo<i>;</i></h2>
+  <div class="foot-grid">
+    <div class="terminal" id="terminal"></div>
+    <div></div>
+  </div>
+  <div class="foot-meta">
+    <span>UNOFFICIAL FAN PROJECT — STEINS;GATE © 5PB. / MAGES. / NITROPLUS — PORTRAITS VIA <b>JIKAN × MYANIMELIST</b></span>
+    <span>LAB MEMBER <b>009?</b> — APPLY IN PERSON. THE ORGANIZATION IS WATCHING.</span>
+  </div>
+</footer>
+
+<!-- ================= D-MAIL MODAL ================= -->
+<div class="modal" id="dmailModal" role="dialog" aria-modal="true" aria-label="Send a D-mail">
+  <div class="panel">
+    <div class="panel-bar">
+      <div>
+        <h3>PHONE MICROWAVE (TEMPORAL LABEL)</h3>
+        <small>FUTURE GADGET NO.8 — MICROWAVE OVEN + MOBILE PHONE</small>
+      </div>
+      <button class="x-btn" data-close aria-label="Close">✕</button>
+    </div>
+    <div class="panel-body">
+      <label class="f-label" for="dmWhen">DESTINATION (PAST)</label>
+      <input class="f-input" id="dmWhen" type="text" placeholder="e.g. 1975-08-31 14:20 JST" autocomplete="off">
+      <label class="f-label" for="dmMsg">MESSAGE — SMS FORMAT</label>
+      <textarea class="f-area" id="dmMsg" maxlength="44" placeholder="Type your message to the past…"></textarea>
+      <div class="f-count"><span id="dmCount">0</span>/44</div>
+      <button class="btn primary" id="dmSend" style="width:100%">Send to the past</button>
+      <div class="term" id="dmTerm"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LIGHTBOX ================= -->
+<div class="modal" id="lightbox" role="dialog" aria-modal="true" aria-label="Archive still">
+  <div class="panel lb-panel">
+    <div class="panel-bar">
+      <div><h3>ARCHIVE STILL — INSPECTION MODE</h3><small>SIGNAL RESTORED</small></div>
+      <button class="x-btn" data-close aria-label="Close">✕</button>
+    </div>
+    <div class="lb-stage">
+      <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous">←</button>
+      <img id="lbImg" src="" alt="Archive still, enlarged">
+      <button class="lb-arrow lb-next" id="lbNext" aria-label="Next">→</button>
+      <div class="lb-cap"><span class="gref" id="lbRef"></span><span id="lbLabel"></span><span class="lb-count" id="lbCount"></span></div>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ============================================================
+   FUTURE GADGET LAB — archive logic
+============================================================ */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------------- LAB MEMBER DATA ---------------- */
+const MEMBERS=[
+{ id:'okabe', short:'OKABE', no:'001', name:'OKABE RINTARO', jp:'岡部 倫太郎',
+  mal:'okabe', va:'MAMORU MIYANO',
+  alias:'HOUOUIN KYOUMA — MAD SCIENTIST',
+  role:'FOUNDER / SELF-PROCLAIMED MAD SCIENTIST',
+  status:'ACTIVE — CONVERGENCE REACHED',
+  quote:'“This is the choice of Steins Gate.”',
+  bio:[
+   'A self-styled mad scientist and founder of the Future Gadget Lab, Okabe spends his days inventing “Future Gadgets” of dubious usefulness while waging an imaginary war against The Organization. His dramatic laugh echoes through the back alleys of Akihabara, and his middle-school delusions are, on paper, deeply embarrassing.',
+   'But when the Phone Microwave starts texting 1975, the persona becomes armor. The only person who retains memory across world line shifts — an ability he names Reading Steiner — Okabe carries every death, every reset, every failed future alone. The man who played at being a scientist becomes the one who must defy the universe itself, again and again, at any cost.'],
+  facts:['FOUNDER — LAB MEMBER 001','ABILITY: READING STEINER','FUEL OF CHOICE: DR PEPPER (THE SMART FLAVOR)'] },
+
+{ id:'kurisu', short:'KURISU', no:'004', name:'MAKISE KURISU', jp:'牧瀬 紅莉栖',
+  mal:'makise', va:'ASAMI IMAI',
+  alias:'CHRISTINA / THE ZOMBIE / KURIGOHAN AND KAMEHAMEHA',
+  role:'NEUROSCIENTIST / THE LAB\u2019S BRAIN',
+  status:'ACTIVE — RESCUED FROM BETA 1.130205%',
+  quote:'“The universe has a beginning, but no end.”',
+  bio:[
+   'A neuroscience prodigy who published in an academic journal at seventeen, Kurisu arrives in Akihabara to deny a rumor of her own murder — and walks into a junk-shop lab where a microwave is somehow sending messages to the past. She is the scientific spine of the Future Gadget Lab: the mind that turns a coincidence into a theory, and a theory into time travel.',
+   'Sardonic, brilliant, violently allergic to being called Christina, and secretly a devoted @channel poster under the handle “KuriGohan and Kamehameha”. Beneath the thorny surface is a researcher who, at the end of one world line, chooses to die so a stranger\u2019s future can exist — and who gets saved anyway, because one man refused to accept a universe without her.'],
+  facts:['LAB MEMBER 004 — RECRUITED AT TASERPOINT','FIELD: MEMORY / NEUROSCIENCE','@CHAN HANDLE: KURIGOHAN AND KAMEHAMEHA'] },
+
+{ id:'mayuri', short:'MAYURI', no:'002', name:'SHIINA MAYURI', jp:'椎名 まゆり',
+  mal:'shiina', va:'KANA HANAZAWA',
+  alias:'MAYUSHII',
+  role:'HIGH SCHOOLER / COSTUME CRAFT & COMFORT',
+  status:'ALIVE — ON EVERY WORLD LINE THAT MATTERS',
+  quote:'“Tu-tu-ru~ Mayushii!”',
+  bio:[
+   'Okabe\u2019s childhood friend and the lab\u2019s heart, Mayuri sews cosplay costumes, calls everything bright and lovely “kira kira”, and greets the world with her unmistakable “Tu-tu-ru~, Mayushii!” She joined the Future Gadget Lab for one simple reason: being with Okabe is fun.',
+   'In the Alpha attractor field she becomes the tragedy the entire story orbits — a death that repeats no matter how the past is rewritten. Her quiet courage, and the metal Upa she presses into Okabe\u2019s hand at exactly the right moment, are the reason he keeps going. Some machines send people through time; Mayuri\u2019s smile is what pulls them home.'],
+  facts:['LAB MEMBER 002 — ORIGINAL MEMBER','SKILL: COSTUME CRAFT — “METAL OPA”','COLLECTOR OF METAL UPAS'] },
+
+{ id:'daru', short:'DARU', no:'003', name:'HASHIDA ITARU', jp:'橋田 至',
+  mal:'hashida', va:'TOMOKAZU SUGITA',
+  alias:'SUPER HACKER “DA-SHINE”',
+  role:'HACKER / HARDWARE / HEAVY OTAKU',
+  status:'ACTIVE — FUTURE FATHER OF LAB MEMBER 008',
+  quote:'“Leave it to Super Hacker Daru!”',
+  bio:[
+   'The Future Gadget Lab\u2019s super hacker — a man who can breach SERN\u2019s servers but not a conversation with a real woman. Daru built the Phone Microwave, reverse-engineered the Time Leap Machine, and provides the technical muscle for every operation the lab attempts.',
+   'Beneath the comedy of otaku excess is a genuinely devoted engineer — and, on one distant world line, the father of Amane Suzuha: the time traveler who rides a broken machine into the past to fight a war he will spend his whole life making sure never happens.'],
+  facts:['LAB MEMBER 003 — HARDWARE & NETWORKS','BUILT: PHONE MICROWAVE / TIME LEAP MACHINE','WEAKNESS: ANY ACTUAL WOMAN, PRESENT COMPANY INCLUDED'] },
+
+{ id:'suzuha', short:'SUZUHA', no:'008', name:'AMANE SUZUHA', jp:'阿万音 鈴羽',
+  mal:'amane', va:'YUKARI TAMURA',
+  alias:'JOHN TITOR',
+  role:'TIME TRAVELER / SOLDIER OF 2036',
+  status:'DEPARTED 2010.08.21 — OPERATION SKULD',
+  quote:'“I am a warrior. My mission comes first.”',
+  bio:[
+   'Part-time worker at the Braun Tube Workshop downstairs, bicycle mechanic, world-class shaker of hands — and, as she eventually admits, a time traveler from 2036: a future ruled by SERN after a Third World War. Sent back to 2010 to secure the IBN 5100 and rewrite history, Suzuha hides a soldier\u2019s resolve behind a sunny smile.',
+   'She is the lab\u2019s conscience in motion — the one who understands what a world line costs, because she grew up inside its wreckage. In the Beta field she becomes the pilot of Operation Skuld, riding the time machine one last time to give her father, and Okabe, a fighting chance.'],
+  facts:['LAB MEMBER 008 — RECRUITED AS PART-TIMER','POSTED AS “JOHN TITOR” ON BOARDS SINCE 2000','ORIGIN: 2036 — WAR-TORN BETA FIELD'] },
+
+{ id:'moeka', short:'MOEKA', no:'005', name:'KIRYU MOEKA', jp:'桐生 萌郁',
+  mal:'kiryu', va:'SAORI GOTO',
+  alias:'ROUNDER AGENT — “FB\u2019S” HANDS',
+  role:'INFILTRATOR / IBN 5100 SEEKER',
+  status:'MEMBERSHIP REVOKED — ROUNDERS DISBANDED',
+  quote:'“…Please. Just answer the phone.”',
+  bio:[
+   'A tall, near-silent woman found searching Akihabara for the IBN 5100, Moeka sends text messages faster than anyone can speak and insists on communicating by phone even when standing face to face. Self-appointed “Lab Member 005”, she brings the antique computer that started everything into the lab.',
+   'She is also a Rounder — an agent of SERN\u2019s Committee of 300, following orders from a man she has never met, whose text messages are her only proof that she exists. Moeka is the story\u2019s quiet horror: proof that on some world lines, even the enemy is just someone desperate to be heard.'],
+  facts:['LAB MEMBER 005 — STATUS: REVOKED','AFFILIATION: ROUNDER / COMMITTEE OF 300','OBJECT OF OBSESSION: IBN 5100'] },
+
+{ id:'luka', short:'LUKA', no:'006', name:'URUSHIBARA LUKA', jp:'漆原 るか',
+  mal:'urushibara', va:'YU KOBAYASHI',
+  alias:'LUKAKO',
+  role:'SHRINE HEIR / OKABE\u2019S APPRENTICE',
+  status:'ACTIVE — PRAYING AT THE SHRINE',
+  quote:'“Please, Okabe-sama… take me as your apprentice.”',
+  bio:[
+   'The soft-spoken heir of a shrine in Akihabara, Luka trains under Okabe as his first “apprentice”, wears Mayuri\u2019s hand-me-down cosplay with unsettling grace, and wishes more than anything to have been born a boy. Gentle to a fault, Luka expresses affection through quiet devotion — and through tea served at precisely the right temperature.',
+   'When a D-mail offers the chance to rewrite even that, Luka takes it — and on the world line where the wish comes true, Luka is the one who must choose to send it back. It is one of the story\u2019s most aching lessons: some wishes, once granted, weigh heavier than wishes refused.'],
+  facts:['LAB MEMBER 006 — FIRST APPRENTICE','TRAINS IN: EXORCISM RITES / SWORDSMANSHIP','FAVORITE DUTY: SERVING TEA TO OKABE-SAMA'] },
+
+{ id:'faris', short:'FARIS', no:'007', name:'AKIHA RUMIHO', jp:'秋葉 留未穂',
+  mal:'faris', va:'HARUKO MOMOI',
+  alias:'FARIS NYANNYAN',
+  role:'MAID CAFÉ QUEEN / ACCESS BATTLER',
+  status:'ACTIVE — DEFENDING AKIHABARA, NYAN',
+  quote:'“Nyan? Are you perhaps interested in me, nyan?”',
+  bio:[
+   '“Faris NyanNyan” — beloved manager of the maid café May Queen Nyan2, undisputed champion of the card game Rainet Access Battler, and the reason nearly every sentence in her vicinity ends with “nyan”. Akihabara is her kingdom, and she treats its residents accordingly.',
+   'One D-mail from Faris changes the entire city: on her world line, Akihabara is rebuilt as a fortress of steel against the sun. She is also the lab\u2019s most frighteningly good strategist — win her trust, and she will trade you the truth, but only in exchange for a duel.'],
+  facts:['LAB MEMBER 007 — JOINED VIA DUEL','REAL NAME: AKIHA RUMIHO','RANK: S — RAINET ACCESS BATTLER'] },
+];
+
+/* ---------------- TEXT SCRAMBLE ---------------- */
+const GLYPHS='01;<>#%&$+*=/\\アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+let scrambleToken=0;
+function scramble(el,text,dur=650){
+  if(REDUCED){el.textContent=text;return Promise.resolve();}
+  const id=++scrambleToken,start=performance.now();
+  return new Promise(res=>{(function fr(now){
+    if(id!==scrambleToken)return res();
+    const p=Math.min(1,(now-start)/dur), n=Math.floor(p*text.length);
+    let out=text.slice(0,n);
+    for(let i=n;i<text.length;i++){const c=text[i];out+=(c===' '||c==='—')?c:GLYPHS[Math.random()*GLYPHS.length|0];}
+    el.textContent=out;
+    if(p<1)requestAnimationFrame(fr);else{el.textContent=text;res();}
+  })(start);});
+}
+
+/* ---------------- TOASTS ---------------- */
+function toast(msg){
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  $('#toasts').appendChild(t);requestAnimationFrame(()=>t.classList.add('in'));
+  setTimeout(()=>{t.classList.remove('in');setTimeout(()=>t.remove(),450)},4400);
+}
+
+/* ---------------- LAB CLOCK (JST) ---------------- */
+const clockFmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+setInterval(()=>{$('#labClock').textContent=clockFmt.format(new Date())},1000);
+ $('#labClock').textContent=clockFmt.format(new Date());
+
+/* ============================================================
+   PORTRAIT FEED — real anime / VN character art via Jikan API
+   (free, no key). Falls back to "archive code" cards offline.
+============================================================ */
+const IMAGE_FEED={
+  ready:false, failed:false,
+  portraits:{},   // id -> {url, malId}
+  pictures:{},    // id -> [url,...]
+  async init(){
+    try{
+      const data=await jikan('anime/9253/characters'); // Steins;Gate (2011)
+      for(const edge of data){
+        const c=edge.character; if(!c)continue;
+        const m=MEMBERS.find(mm=>!this.portraits[mm.id] && c.name.toLowerCase().includes(mm.mal));
+        if(!m)continue;
+        this.portraits[m.id]={
+          url:c.images?.jpg?.large_image_url||c.images?.jpg?.image_url||c.images?.webp?.large_image_url||'',
+          malId:c.mal_id};
+      }
+      this.ready=MEMBERS.every(m=>this.portraits[m.id]?.url);
+      if(!this.ready)throw 0;
+      updateDossierImages();renderGallery();
+      toast('Portrait uplink established — official anime & VN art loaded. El Psy Kongroo.');
+      // extra archive stills per member (staggered — API is rate limited)
+      MEMBERS.forEach((m,n)=>setTimeout(async()=>{
+        const p=this.portraits[m.id]; if(!p)return;
+        try{
+          const pics=await jikan(`characters/${p.malId}/pictures`);
+          this.pictures[m.id]=(pics||[])
+            .map(x=>x.jpg?.large_image_url||x.jpg?.image_url).filter(Boolean).slice(0,4);
+          renderGallery();updateDossierImages();
+        }catch(e){}
+      },500+n*550));
+    }catch(e){
+      this.failed=true;
+      renderGallery();updateDossierImages();
+      toast('Image uplink blocked by The Organization — archive codes engaged. Reload to retry.');
+    }
+  }
+};
+async function jikan(path,tries=2){
+  for(let i=0;i<tries;i++){
+    try{
+      const r=await fetch('https://api.jikan.moe/v4/'+path);
+      if(r.status===429){await sleep(1500);continue;}
+      if(!r.ok)throw 0;
+      return (await r.json()).data;
+    }catch(e){ if(i===tries-1)throw e; await sleep(1100);}
+  }
+  throw 0;
+}
+/* stylized fallback card when the feed is unreachable */
+function monogram(m,sub='SIGNAL LOST'){
+  const initials=m.name.split(/[\s-]+/).slice(0,2).map(s=>s[0]).join('');
+  const stripes=Array.from({length:22},(_,i)=>`<line x1="0" y1="${i*46}" x2="800" y2="${i*46}"/>`).join('');
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+    <rect width="800" height="1000" fill="#120d0d"/>
+    <g stroke="#ff2b1a" stroke-opacity=".12">${stripes}</g>
+    <rect x="26" y="26" width="748" height="948" fill="none" stroke="#ff2b1a" stroke-opacity=".55" stroke-width="2"/>
+    <text x="400" y="530" font-family="monospace" font-weight="bold" font-size="290" fill="#ff2b1a" fill-opacity=".9" text-anchor="middle" letter-spacing="8">${initials}</text>
+    <text x="400" y="636" font-family="monospace" font-size="27" fill="#8a8894" letter-spacing="14" text-anchor="middle">${m.name}</text>
+    <text x="400" y="684" font-family="monospace" font-size="17" fill="#55545e" letter-spacing="7" text-anchor="middle">${sub} — ARCHIVE CODE ${m.no}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+function swapImg(img,url,alt=''){
+  if(img.src===url)return;
+  img.style.opacity='0';
+  img.onload=()=>{img.style.opacity='';};
+  img.onerror=()=>{img.onerror=null;img.style.opacity='';};
+  img.src=url; if(alt)img.alt=alt;
+}
+
+/* ---------------- DIVERGENCE METER ---------------- */
+const NS='http://www.w3.org/2000/svg';
+const SEGPOS={a:[8,0,40,0],f:[0,8,36,1],b:[46,8,36,1],g:[8,45,40,0],e:[0,56,36,1],c:[46,56,36,1],d:[8,90,40,0]};
+const DIGMAP={0:'abcdef',1:'bc',2:'abged',3:'abgcd',4:'fgbc',5:'afgcd',6:'afgedc',7:'abc',8:'abcdefg',9:'abcdfg'};
+function segPath(x,y,l,horiz){
+  return horiz
+    ?`M ${x} ${y+5} L ${x+5} ${y} L ${x+l-5} ${y} L ${x+l} ${y+5} L ${x+l-5} ${y+10} L ${x+5} ${y+10} Z`
+    :`M ${x+5} ${y} L ${x+10} ${y+5} L ${x+10} ${y+l-5} L ${x+5} ${y+l} L ${x} ${y+l-5} L ${x} ${y+5} Z`;
+}
+function makeDigitCell(){
+  const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 56 100');
+  const segs={};
+  for(const k in SEGPOS){const[x,y,l,h]=SEGPOS[k];const p=document.createElementNS(NS,'path');
+    p.setAttribute('d',segPath(x,y,l,h));p.setAttribute('class','seg');svg.appendChild(p);segs[k]=p;}
+  return{el:svg,isDot:false,
+    clear(){for(const k in segs)segs[k].classList.remove('on')},
+    set(d){const on=DIGMAP[d]||'';for(const k in segs)segs[k].classList.toggle('on',on.includes(k))},
+    rand(){this.set('0123456789'[Math.random()*10|0])}};
+}
+function makeDotCell(){
+  const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 56 100');
+  const c=document.createElementNS(NS,'circle');
+  c.setAttribute('cx',24);c.setAttribute('cy',90);c.setAttribute('r',6);c.setAttribute('class','seg');
+  svg.appendChild(c);
+  return{el:svg,isDot:true,c,
+    clear(){c.classList.remove('on')},
+    set(on){c.classList.toggle('on',!!on)},
+    rand(){this.set(Math.random()<.3)}};
+}
+const meter={
+  value:'1.048596',cells:[],busy:false,
+  build(){const box=$('#meterDigits');
+    for(const ch of this.value){const c=ch==='.'?makeDotCell():makeDigitCell();box.appendChild(c.el);this.cells.push(c);c.clear();}},
+  set(str){let i=0;for(const ch of str){const c=this.cells[i++];if(!c)break;ch==='.'?c.set(1):c.set(ch);}},
+  randomize(){for(const c of this.cells)c.rand();},
+  flicker(dur=1200){this.busy=true;$('#ledSnd').classList.add('on');const t0=performance.now();
+    const iv=setInterval(()=>{if(performance.now()-t0>dur){clearInterval(iv);this.set(this.value);
+      this.busy=false;$('#ledSnd').classList.remove('on');}else this.randomize();},65);},
+  flutter(){
+    if(this.busy)return;this.busy=true;
+    const idx=[...this.cells.keys()].filter(i=>!this.cells[i].isDot);
+    const pick=[idx[Math.random()*idx.length|0],idx[Math.random()*idx.length|0]];
+    const t0=performance.now();
+    const iv=setInterval(()=>{if(performance.now()-t0>460){clearInterval(iv);this.set(this.value);this.busy=false;}
+      else pick.forEach(i=>this.cells[i].rand());},70);}
+};
+meter.build();
+(async function bootMeter(){
+  await sleep(500);
+  meter.flicker(REDUCED?10:2300);
+  const STATUS=['ATTRACTOR FIELD: ANALYZING…','SHIFT DETECTED — MEMORY RETAINED','READING STEINER: ACTIVE',
+    'CONVERGENCE: STEINS GATE','LAB TIME SYNCHRONIZED','NO ANOMALIES. PROBABLY.'];
+  let si=0;await sleep(REDUCED?50:2350);
+  scramble($('#meterStatus'),STATUS[0],500);si=1;
+  setInterval(()=>{if(!meter.busy){scramble($('#meterStatus'),STATUS[si],450);si=(si+1)%STATUS.length;}},3800);
+  setInterval(()=>meter.flutter(),9000);
+})();
+
+/* ---------------- HERO CANVAS ---------------- */
+(function(){
+  const cv=$('#heroCanvas'),ctx=cv.getContext('2d');
+  let W,H,t=0,visible=true;const DPR=Math.min(2,devicePixelRatio||1);
+  function resize(){W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);}
+  resize();addEventListener('resize',resize);
+  const lines=[];
+  for(let i=0;i<16;i++)lines.push({
+    y:.16+.062*i,amp:9+Math.random()*24,f:.0038+Math.random()*.005,
+    sp:.35+Math.random()*.5,ph:Math.random()*6.28,red:i%5===0});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(const L of lines){ctx.beginPath();
+      for(let x=0;x<=W;x+=8){
+        const y=H*L.y+Math.sin(x*L.f+t*L.sp+L.ph)*L.amp+Math.sin(x*L.f*.33+t*L.sp*.7+L.ph)*L.amp*.5;
+        x?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+      ctx.strokeStyle=L.red?`rgba(255,43,26,${L.red?.5:.07})`:'rgba(233,231,226,.07)';
+      ctx.lineWidth=L.red?1.2:1;ctx.stroke();}
+  }
+  function frame(){if(visible&&!REDUCED){t+=.016;draw();}requestAnimationFrame(frame);}
+  new IntersectionObserver(e=>visible=e[0].isIntersecting).observe(cv);
+  draw();if(!REDUCED)frame();
+})();
+
+/* ---------------- TICKER ---------------- */
+(function(){
+  const items=['EL PSY KONGROO','LAB MEMBER 001–008','PHONE MICROWAVE (TEMPORAL LABEL)','DIVERGENCE 1.048596%',
+    'IBN 5100 LOCATED','DR PEPPER — THE SMART FLAVOR','OPERATION SKULD','TU-TU-RU~','THE ORGANIZATION IS WATCHING',
+    'TIME LEAP: 48H OPERATION LIMIT','GATE OF STEINER'];
+  const half='<span class="sl">///</span>'+items.map(i=>`<span>${i}</span><span class="sl">///</span>`).join('');
+  $('#tickerTrack').innerHTML=`<div class="ticker-half">${half}</div><div class="ticker-half">${half}</div>`;
+})();
+
+/* ---------------- LAB MEMBER FILES ---------------- */
+const INDEX=$('#filesIndex');
+MEMBERS.forEach((m,i)=>{
+  const b=document.createElement('button');b.className='idx';b.dataset.i=i;
+  b.innerHTML=`<span class="idx-no">${m.no}</span><span class="idx-name">${m.name}</span><span class="idx-role">${m.role}</span>`;
+  b.addEventListener('click',()=>selectMember(i));INDEX.appendChild(b);
+});
+const hint=document.createElement('p');hint.className='idx-hint';
+hint.textContent='↑ / ↓ TO BROWSE — FILES DECRYPT ON OPEN';INDEX.appendChild(hint);
+
+let cur=0;
+function selectMember(i,fromHash=false){
+  cur=(i+MEMBERS.length)%MEMBERS.length;const m=MEMBERS[cur];
+  $$('.idx').forEach((b,j)=>b.classList.toggle('active',j===cur));
+  $('#dFilePos').textContent=`FILE ${m.no} / 008`;
+  $('#dAccess').textContent='DECRYPTING…';
+  setTimeout(()=>$('#dAccess').textContent='ACCESS GRANTED',REDUCED?0:650);
+  $('#dPhotoCap').textContent=`REF.SGN-${m.no} // ${m.name} — FUTURE GADGET LAB`;
+  $('#dJp').textContent=m.jp;
+  scramble($('#dName'),m.name,600);
+  scramble($('#dAlias'),m.alias,520);
+  scramble($('#dQuote'),m.quote,760);
+  $('#dNo').textContent=m.no;
+  $('#dRole').textContent=m.role;
+  $('#dStatus').textContent=m.status;
+  $('#dVA').textContent=m.va;
+  $('#dBio').innerHTML=m.bio.map((p,k)=>`<p class="bio-p" style="animation-delay:${.12+k*.14}s">${p}</p>`).join('');
+  $('#dFacts').innerHTML=m.facts.map((f,k)=>`<li style="animation:rise .6s both ${.3+k*.1}s">${f}</li>`).join('');
+  updateDossierImages();
+  if(!fromHash)history.replaceState(null,'','#labmember-'+m.id);
+}
+function updateDossierImages(){
+  const m=MEMBERS[cur];
+  const main=$('#dImg'),s1=$('#dStill1'),s2=$('#dStill2');
+  const p=IMAGE_FEED.portraits[m.id];
+  if(p&&p.url) swapImg(main,p.url,`${m.name} — official archive portrait`);
+  else swapImg(main,monogram(m,IMAGE_FEED.failed?'SIGNAL LOST':'AWAITING UPLINK'),m.name);
+  const pics=IMAGE_FEED.pictures[m.id]||[];
+  pics[0]?swapImg(s1,pics[0],`${m.name} — archive still`):swapImg(s1,monogram(m,'SIGNAL PENDING'),m.name);
+  pics[1]?swapImg(s2,pics[1],`${m.name} — archive still`):swapImg(s2,monogram(m,'SIGNAL PENDING'),m.name);
+}
+ $('#prevBtn').addEventListener('click',()=>selectMember(cur-1));
+ $('#nextBtn').addEventListener('click',()=>selectMember(cur+1));
+document.addEventListener('keydown',e=>{
+  if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  const r=$('#dossier').getBoundingClientRect();
+  if(r.top<innerHeight&&r.bottom>0){
+    if(e.key==='ArrowDown'){e.preventDefault();selectMember(cur+1);}
+    if(e.key==='ArrowUp'){e.preventDefault();selectMember(cur-1);}
+  }
+});
+ $('#ctaFiles').addEventListener('click',()=>$('#files').scrollIntoView({behavior:'smooth'}));
+const hashId=location.hash.replace('#labmember-','');
+selectMember(Math.max(0,MEMBERS.findIndex(m=>m.id===hashId)),true);
+
+/* ---------------- WORLD LINE DRAW-ON-SCROLL ---------------- */
+new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('inview');o.unobserve(e.target);}})},{threshold:.3})
+  .observe($('#wl'));
+
+/* ---------------- GALLERY (real character art) ---------------- */
+const galGrid=$('#galGrid'),galFilters=$('#galFilters');
+let GAL_TILES=[],galFilter='all';
+const SPANS=['s3 r3','s3 r2','s2 r2','s3 r2','s2 r3','s4 r2','s3 r2','s2 r2'];
+
+function buildFilters(){
+  if(galFilters.children.length)return;
+  const mk=(label,val)=>{
+    const b=document.createElement('button');b.className='gf'+(val===galFilter?' active':'');
+    b.textContent=label;
+    b.addEventListener('click',()=>{galFilter=val;
+      galFilters.querySelectorAll('.gf').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');renderGallery();});
+    galFilters.appendChild(b);
+  };
+  mk('ALL — LAB','all');
+  MEMBERS.forEach(m=>mk(m.short,m.id));
+}
+function visibleTiles(){return GAL_TILES.filter(t=>galFilter==='all'||t.id===galFilter);}
+function renderGallery(){
+  buildFilters();
+  GAL_TILES=[];
+  for(const m of MEMBERS){
+    const p=IMAGE_FEED.portraits[m.id];
+    if(p&&p.url)GAL_TILES.push({id:m.id,url:p.url,label:m.name+' — PORTRAIT',ref:m.no});
+    (IMAGE_FEED.pictures[m.id]||[]).forEach((u,i)=>
+      GAL_TILES.push({id:m.id,url:u,label:`${m.name} — ARCHIVE STILL ${String(i+1).padStart(2,'0')}`,ref:m.no}));
+  }
+  if(IMAGE_FEED.failed||GAL_TILES.length===0){
+    MEMBERS.forEach(m=>GAL_TILES.push({id:m.id,url:monogram(m),label:m.name+' — ARCHIVE CODE',ref:m.no}));
+  }
+  galGrid.innerHTML='';
+  GAL_TILES.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='gitem '+SPANS[i%SPANS.length]+((galFilter!=='all'&&t.id!==galFilter)?' hide':'');
+    b.innerHTML=`<span class="imgwrap"><img loading="lazy" src="${t.url}" alt="${t.label}"></span>
+      <span class="gcap"><span class="gref">LAB ${t.ref}</span><span class="glabel">${t.label}</span></span>`;
+    b.addEventListener('click',()=>{const list=visibleTiles();openLB(list.indexOf(t));});
+    galGrid.appendChild(b);
+  });
+  const st=$('#galStatus');
+  if(IMAGE_FEED.failed){
+    st.textContent='UPLINK BLOCKED — SHOWING ARCHIVE CODES. RELOAD TO RETRY.';
+  }else if(IMAGE_FEED.ready){
+    st.className='gal-status ok';
+    st.textContent=`PORTRAIT UPLINK: ${GAL_TILES.length} STILLS — SOURCE: MYANIMELIST (ANIME & VN ART) · © 5PB./MAGES./NITROPLUS`;
+  }
+}
+
+/* ---------------- MODAL PLUMBING ---------------- */
+function openModal(sel){$(sel).classList.add('open');document.body.style.overflow='hidden';}
+function closeModals(){$$('.modal').forEach(m=>m.classList.remove('open'));document.body.style.overflow='';}
+ $$('[data-open="dmail"]').forEach(b=>b.addEventListener('click',()=>{resetDmail();openModal('#dmailModal');}));
+ $$('[data-close]').forEach(b=>b.addEventListener('click',closeModals));
+ $$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals();}));
+document.addEventListener('keydown',e=>{
+  if($('#lightbox').classList.contains('open')){
+    if(e.key==='Escape')closeModals();
+    if(e.key==='ArrowLeft')openLB(lbI-1);
+    if(e.key==='ArrowRight')openLB(lbI+1);
+  }else if(e.key==='Escape')closeModals();
+});
+
+/* ---------------- LIGHTBOX ---------------- */
+let lbI=0;
+function openLB(iInList){
+  const list=visibleTiles();if(!list.length)return;
+  lbI=(iInList+list.length)%list.length;const t=list[lbI];
+  $('#lbImg').src=t.url;$('#lbImg').alt=t.label;
+  $('#lbRef').textContent='LAB '+t.ref;$('#lbLabel').textContent=t.label;
+  $('#lbCount').textContent=`${String(lbI+1).padStart(2,'0')} / ${String(list.length).padStart(2,'0')}`;
+  openModal('#lightbox');
+}
+ $('#lbPrev').addEventListener('click',()=>openLB(lbI-1));
+ $('#lbNext').addEventListener('click',()=>openLB(lbI+1));
+
+/* ---------------- D-MAIL TERMINAL ---------------- */
+let dmBusy=false;
+ $('#dmMsg').addEventListener('input',e=>$('#dmCount').textContent=e.target.value.length);
+function dmLine(text,hot=false){const d=document.createElement('div');d.className='tline'+(hot?' hot':'');d.textContent=text;$('#dmTerm').appendChild(d);}
+function resetDmail(){$('#dmTerm').innerHTML='';$('#dmMsg').value='';$('#dmCount').textContent='0';$('#dmSend').disabled=false;dmBusy=false;}
+ $('#dmSend').addEventListener('click',async()=>{
+  if(dmBusy)return;dmBusy=true;$('#dmSend').disabled=true;
+  const seq=[['> ESTABLISHING LRS CONNECTION… OK',350,false],
+             ['> ENCODING MESSAGE → 2.5 GHZ MICRO-SIGNAL',750,false],
+             ['> BLACK HOLE DETONATION — MICROSIGNAL CONVEYED TO PAST',1050,false],
+             ['> D-MAIL SENT.',450,true]];
+  for(const[t,d,hot]of seq){await sleep(d);dmLine(t,hot);}
+  dmLine('> DIVERGENCE METER: RECALIBRATING…');scramble($('#meterStatus'),'RECALIBRATING WORLD LINE…',400);
+  meter.flicker(1400);
+  await sleep(1500);
+  dmLine('> WORLD LINE STABLE — 1.048596%',true);
+  scramble($('#meterStatus'),'CONVERGENCE: STEINS GATE',450);
+  toast('D-mail delivered to the past. Do not tell the Organization. El Psy Kongroo.');
+  $('#dmMsg').value='';$('#dmCount').textContent='0';$('#dmSend').disabled=false;dmBusy=false;
+});
+
+/* ---------------- FOOTER TERMINAL ---------------- */
+const TERM_LINES=[
+  ['cmd','whoami'],
+  ['out','FUTURE GADGET LABORATORY — EST. 2010, AKIHABARA, TOKYO'],
+  ['cmd','divergence'],
+  ['out','1.048596% — CONVERGENCE CONFIRMED. NO DEATHS ON THIS WORLD LINE.'],
+  ['cmd','exit'],
+  ['out','THIS IS THE CHOICE OF STEINS GATE. EL PSY KONGROO.'],
+];
+async function typeTerminal(){
+  if(REDUCED){TERM_LINES.forEach(([c,t])=>{const d=document.createElement('div');if(c==='cmd')d.className='cmd';d.textContent=t;$('#terminal').appendChild(d);});return;}
+  const box=$('#terminal');
+  for(const[c,text]of TERM_LINES){
+    const d=document.createElement('div');if(c==='cmd')d.className='cmd';box.appendChild(d);
+    for(const ch of text){d.textContent+=ch;await sleep(13);}
+    await sleep(320);
+  }
+  const c=document.createElement('div');c.innerHTML='<span class="cur">▮</span>';box.appendChild(c);
+}
+new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){typeTerminal();o.unobserve(e.target);}})},{threshold:.4})
+  .observe($('#terminal'));
+
+/* ---------------- REVEAL + NAV + FEED BOOT ---------------- */
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}}),{threshold:.12});
+ $$('.reveal').forEach(el=>ro.observe(el));
+const navObs=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting)$$('.nav-links a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));
+}),{rootMargin:'-40% 0px -55% 0px'});
+['files','worldlines','gallery'].forEach(id=>navObs.observe(document.getElementById(id)));
+
+IMAGE_FEED.init();
+</script>
+</body>
+</html>
